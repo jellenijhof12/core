@@ -49,9 +49,20 @@ async def async_setup_platform(
         _LOGGER.error("Unable to access %s (%s)", host, err)
         raise PlatformNotReady from err
 
-    async_add_entities(
-        [NikoHomeControlLight(light, niko_data) for light in nhc.list_actions()], True
-    )
+    entities = [NikoHomeControlLight(light, niko_data) for light in nhc.list_actions()]
+    async_add_entities(entities, True)
+
+    # def callback(data):
+    #     """Update the state."""
+    #     _LOGGER.info("Update: %s", data)
+    #     # for entity in entities:
+    #     #     entity.async_write_ha_state()
+
+    # def loop():
+    #     nikohomecontrol.NikoHomeControlMonitor(host).listen(callback)
+
+    # create a background thread to listen for updates
+    # hass.loop.create_task(loop)
 
 
 class NikoHomeControlLight(LightEntity):
